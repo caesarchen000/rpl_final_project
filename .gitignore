@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Training outputs
+exp/
+exp_per_part/
+*.pt
+*.pth
+*.ckpt
+checkpoint/
+
+# Data directories
+grab_data/
+meshes/
+*.obj
+*.ply
+*.npy
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+train.log
+
+# Test outputs
+test_results/
+demo_results/
