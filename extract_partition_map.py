@@ -93,9 +93,14 @@ def extract_partition_map(obj_path, checkpoint_path, n_samples=5, save_root='exp
     print(f"  partition_probs (softmax): {partition_probs.shape} [B={n_samples}, N={n_points_actual}, 16 parts]")
     
     # Convert to numpy
+    contacts_object_np = contacts_object.detach().cpu().numpy()  # [B, N, 1] or [B, N]
     partition_logits_np = partition_object.detach().cpu().numpy()  # [B, N, 16]
     partition_hard_np = partition_hard.detach().cpu().numpy()  # [B, N]
     partition_probs_np = partition_probs.detach().cpu().numpy()  # [B, N, 16]
+    
+    # Squeeze contact map if needed
+    if len(contacts_object_np.shape) == 3 and contacts_object_np.shape[2] == 1:
+        contacts_object_np = contacts_object_np.squeeze(-1)  # [B, N]
     
     # Hand part names for reference
     part_names = [
@@ -127,6 +132,11 @@ def extract_partition_map(obj_path, checkpoint_path, n_samples=5, save_root='exp
     # Save results
     print(f"\nSaving results to {save_root}...")
     
+    # Save contact map
+    np.save(os.path.join(save_root, 'contact_map.npy'), contacts_object_np)
+    print(f"  Contact map shape: {contacts_object_np.shape}")
+    print(f"  Contact value range: [{contacts_object_np.min():.4f}, {contacts_object_np.max():.4f}]")
+    
     # Save raw logits
     np.save(os.path.join(save_root, 'partition_logits.npy'), partition_logits_np)
     
@@ -141,9 +151,10 @@ def extract_partition_map(obj_path, checkpoint_path, n_samples=5, save_root='exp
     
     # Save individual samples
     for i in range(n_samples):
-        np.save(os.path.join(save_root, f'partition_logits_{i}.npy'), partition_logits_np[i])  # [2048, 16]
-        np.save(os.path.join(save_root, f'partition_hard_{i}.npy'), partition_hard_np[i])  # [2048]
-        np.save(os.path.join(save_root, f'partition_probs_{i}.npy'), partition_probs_np[i])  # [2048, 16]
+        np.save(os.path.join(save_root, f'contact_map_{i}.npy'), contacts_object_np[i])  # [N]
+        np.save(os.path.join(save_root, f'partition_logits_{i}.npy'), partition_logits_np[i])  # [N, 16]
+        np.save(os.path.join(save_root, f'partition_hard_{i}.npy'), partition_hard_np[i])  # [N]
+        np.save(os.path.join(save_root, f'partition_probs_{i}.npy'), partition_probs_np[i])  # [N, 16]
     
     # Save part names for reference
     with open(os.path.join(save_root, 'part_names.txt'), 'w') as f:
@@ -151,6 +162,7 @@ def extract_partition_map(obj_path, checkpoint_path, n_samples=5, save_root='exp
             f.write(f"{part_id}: {part_name}\n")
     
     print(f"✓ Saved partition maps:")
+    print(f"  - contact_map.npy: Contact probability map [B, N] - values [0, 1]")
     print(f"  - partition_logits.npy: Raw logits [B, N, 16]")
     print(f"  - partition_hard.npy: Hard assignment (argmax) [B, N] - values 0-15")
     print(f"  - partition_probs.npy: Softmax probabilities [B, N, 16]")

@@ -44,7 +44,10 @@ def optimize_pose(model, mano_layer, obj_verts, obj_cmap, obj_partition, obj_uv,
         pred, pred_p_full = model.forward(pnts)
         
         pred_p = torch.gather(pred_p_full, dim=2, index=obj_partition.unsqueeze(dim=-1)).squeeze(-1)
-        loss_contact = w_contact * (torch.abs(pred_p) * obj_cmap).sum(dim=-1).mean(dim=0)
+        # Ensure obj_cmap is [B, N] for proper broadcasting
+        if obj_cmap.dim() == 3:
+            obj_cmap = obj_cmap.squeeze(-1)  # [B, N, 1] -> [B, N]
+        loss_contact = w_contact * (torch.abs(pred_p) * obj_cmap).sum(dim=-1).mean()
         loss += loss_contact
         loss_info += "contact loss: {:.3f} | ".format(loss_contact.item())
 
@@ -86,7 +89,10 @@ def optimize_pose(model, mano_layer, obj_verts, obj_cmap, obj_partition, obj_uv,
         pnts = model.add_shape_feature(queries=pnts, shape_indices=None, latent_shape_code=mano_shape)
         pred, pred_p_full = model.forward(pnts)
         pred_p = torch.gather(pred_p_full, dim=2, index=obj_partition.unsqueeze(dim=-1)).squeeze(-1)  # (B, Q)
-        loss_contact = w_contact * (torch.abs(pred_p) * obj_cmap).sum(dim=-1).mean(dim=0) 
+        # Ensure obj_cmap is [B, N] for proper broadcasting
+        if obj_cmap.dim() == 3:
+            obj_cmap = obj_cmap.squeeze(-1)  # [B, N, 1] -> [B, N]
+        loss_contact = w_contact * (torch.abs(pred_p) * obj_cmap).sum(dim=-1).mean()
         loss += loss_contact
         loss_info += "contact loss: {:.3f} | ".format(loss_contact.item())
 
