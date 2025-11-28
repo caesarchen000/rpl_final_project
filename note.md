@@ -4,9 +4,9 @@
 
 | Part ID | Hand Part Name | Color | RGB Values |
 |---------|----------------|-------|------------|
-| 0 | palm | Dark Grey | RGB(0.4, 0.4, 0.4) |
+| 0 | palm | Bright Turquoise/Lime Green | RGB(0.2, 1.0, 0.6) |
 | 1 | thumb_mcp | Pure Red | RGB(1.0, 0.0, 0.0) |
-| 2 | thumb_pip | Bright Orange | RGB(1.0, 0.6, 0.0) |
+| 2 | thumb_pip | Bright Coral/Salmon | RGB(1.0, 0.5, 0.7) |
 | 3 | thumb_tip | Pure Yellow | RGB(1.0, 1.0, 0.0) |
 | 4 | index_mcp | Green | RGB(0.0, 0.8, 0.0) |
 | 5 | index_pip | Cyan | RGB(0.0, 0.8, 0.8) |
@@ -25,6 +25,8 @@
 - Colors = Hand part assignment (from partition map)
 - Brightness = Contact probability (from contact map)
 - Formula: `final_color = part_color * contact_probability`
+
+**⚠️ Important**: Always use files generated together from the same `extract_partition_map.py` run! Files from different runs may have different sample points, causing misalignment and incorrect visualizations.
 
 ---
 
@@ -47,7 +49,13 @@ python extract_partition_map.py \
 - `--n_points 0`: Use ALL mesh vertices for dense visualization
 - `--n_samples 5`: Generate 5 different samples (default)
 
-**Output**: Creates `contact_map.npy`, `partition_hard.npy`, `sample_points.npy`, `partition_logits.npy`, `partition_probs.npy` in `save_root`
+**Output**: Creates in `save_root`:
+- `contact_map.npy`: Batch contact map [B, N]
+- `partition_hard.npy`: Batch partition assignments [B, N]
+- `sample_points.npy`: Sampled points [N, 3]
+- `partition_logits.npy`: Raw logits [B, N, 16]
+- `partition_probs.npy`: Softmax probabilities [B, N, 16]
+- Individual sample files: `contact_map_{i}.npy`, `partition_hard_{i}.npy`, etc. for each sample i
 
 ---
 
@@ -108,8 +116,36 @@ python visualize_partition_map.py \
 
 ---
 
-## 4. `visualize_partition_with_contact.py`
-**Purpose**: Visualize partition map with contact-based brightness modulation
+## 4. `visualize_partition_contact_multiply.py`
+**Purpose**: Visualize partition map multiplied by contact map (recommended method)
+
+**Command**:
+```bash
+python visualize_partition_contact_multiply.py \
+  --obj_path grab_data/obj_meshes/toothpaste.ply \
+  --partition_hard exp/partition_results/partition_hard_0.npy \
+  --contact_map exp/partition_results/contact_map_0.npy \
+  --sample_points exp/partition_results/sample_points.npy \
+  --output exp/partition_times_contact_toothpaste.obj \
+  --brightness_scale 1.0 \
+  --min_brightness 0.0
+```
+
+**Important**: Use files generated together from the same `extract_partition_map.py` run to ensure alignment!
+
+**Options**:
+- `--brightness_scale`: Scale factor for brightness (default: 1.0)
+- `--min_brightness`: Minimum brightness to ensure colors are visible (default: 0.0)
+
+**Output**: Creates OBJ file with:
+- **Colors** = Hand part assignment (partition map)
+- **Brightness** = Contact probability (contact map)
+- **Formula**: `final_color = partition_color * contact_probability`
+
+---
+
+## 5. `visualize_partition_with_contact.py`
+**Purpose**: Alternative visualization script for partition map with contact-based brightness modulation
 
 **Command**:
 ```bash
@@ -161,12 +197,17 @@ python visualize_partition_map.py \
   --output exp/my_results/partition.obj
 ```
 
-### Step 4: Visualize with contact brightness
+### Step 4: Visualize with contact brightness (recommended)
 ```bash
-python visualize_partition_with_contact.py \
+python visualize_partition_contact_multiply.py \
   --obj_path grab_data/obj_meshes/mug.ply \
-  --partition_hard exp/my_results/partition_hard.npy \
-  --contact_map exp/my_results/contact_map.npy \
+  --partition_hard exp/my_results/partition_hard_0.npy \
+  --contact_map exp/my_results/contact_map_0.npy \
   --sample_points exp/my_results/sample_points.npy \
-  --output exp/my_results/partition_with_contact.obj
+  --output exp/my_results/partition_times_contact.obj
+```
+
+**Note**: `extract_partition_map.py` automatically creates individual sample files (`contact_map_0.npy`, `partition_hard_0.npy`, etc.). If you need to extract from the batch file manually:
+```bash
+python -c "import numpy as np; np.save('exp/my_results/contact_map_0.npy', np.load('exp/my_results/contact_map.npy')[0])"
 ```

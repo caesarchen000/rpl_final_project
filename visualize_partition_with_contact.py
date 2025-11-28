@@ -24,7 +24,7 @@ PART_NAMES = [
 PART_COLORS = np.array([
     [0.4, 0.4, 0.4],      # 0: palm
     [1.0, 0.0, 0.0],      # 1: thumb_mcp
-    [1.0, 0.6, 0.0],      # 2: thumb_pip
+    [1.0, 0.5, 0.7],      # 2: thumb_pip - bright coral/salmon
     [1.0, 1.0, 0.0],      # 3: thumb_tip
     [0.0, 0.8, 0.0],      # 4: index_mcp
     [0.0, 0.8, 0.8],      # 5: index_pip
