@@ -40,8 +40,25 @@ def visualize_contact_map(obj_path, contact_map_path, sample_points_path, output
     print(f"\n[2/4] Loading contact map: {contact_map_path}")
     contact_map = np.load(contact_map_path)
     original_contact_shape = contact_map.shape
-    if len(contact_map.shape) == 2:
-        contact_map = contact_map[sample_idx]
+    
+    # Handle different shapes: [N], [N, 1], [B, N], [B, N, 1]
+    if len(contact_map.shape) == 3:
+        # [B, N, 1] -> select sample and squeeze
+        contact_map = contact_map[sample_idx].squeeze()
+    elif len(contact_map.shape) == 2:
+        # Could be [B, N] or [N, 1]
+        if contact_map.shape[1] == 1:
+            # [N, 1] -> squeeze to [N]
+            contact_map = contact_map.squeeze()
+        else:
+            # [B, N] -> select sample
+            contact_map = contact_map[sample_idx]
+    elif len(contact_map.shape) == 1:
+        # [N] -> use as is
+        pass
+    else:
+        raise ValueError(f"Unexpected contact map shape: {contact_map.shape}")
+    
     contact_map = contact_map.flatten()
     print(f"  Contact shape: {original_contact_shape} -> {contact_map.shape}")
     print(f"  Contact range: [{contact_map.min():.4f}, {contact_map.max():.4f}] (should be 0-1)")

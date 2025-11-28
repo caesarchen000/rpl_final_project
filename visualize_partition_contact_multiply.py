@@ -108,13 +108,25 @@ def visualize_partition_times_contact(obj_path, partition_hard_path, contact_map
     print(f"\n[3/5] Loading contact map: {contact_map_path}")
     contact_map = np.load(contact_map_path)
     original_contact_shape = contact_map.shape
-    if len(contact_map.shape) == 2:
-        contact_map = contact_map[sample_idx]
-    elif len(contact_map.shape) == 3:
+    
+    # Handle different shapes: [N], [N, 1], [B, N], [B, N, 1]
+    if len(contact_map.shape) == 3:
+        # [B, N, 1] -> select sample and squeeze
         contact_map = contact_map[sample_idx].squeeze()
-    # Handle singleton dimensions
-    if len(contact_map.shape) == 2 and contact_map.shape[1] == 1:
-        contact_map = contact_map.squeeze()
+    elif len(contact_map.shape) == 2:
+        # Could be [B, N] or [N, 1]
+        if contact_map.shape[1] == 1:
+            # [N, 1] -> squeeze to [N]
+            contact_map = contact_map.squeeze()
+        else:
+            # [B, N] -> select sample
+            contact_map = contact_map[sample_idx]
+    elif len(contact_map.shape) == 1:
+        # [N] -> use as is
+        pass
+    else:
+        raise ValueError(f"Unexpected contact map shape: {contact_map.shape}")
+    
     print(f"  Contact shape: {original_contact_shape} -> {contact_map.shape}")
     print(f"  Contact range: [{contact_map.min():.4f}, {contact_map.max():.4f}] (should be 0-1)")
     
