@@ -12,43 +12,57 @@ from scipy.spatial import cKDTree
 
 
 # Hand part names and colors (distinct colors for each part)
+# Mapping (following your convention):
+#   0      : palm
+#   1 ~ 3  : index finger (base, middle, tip)
+#   4 ~ 6  : middle finger (base, middle, tip)
+#   7 ~ 9  : ring finger (base, middle, tip)
+#   10 ~ 12: pinky (base, middle, tip)
+#   13 ~ 15: thumb (base, middle, tip)
 PART_NAMES = [
-    "palm",           # 0
-    "thumb_mcp",      # 1
-    "thumb_pip",      # 2
-    "thumb_tip",      # 3
-    "index_mcp",      # 4
-    "index_pip",      # 5
-    "index_tip",      # 6
-    "middle_mcp",     # 7
-    "middle_pip",     # 8
-    "middle_tip",     # 9
-    "ring_mcp",       # 10
-    "ring_pip",       # 11
-    "ring_tip",       # 12
-    "pinky_mcp",      # 13
-    "pinky_pip",      # 14
-    "pinky_tip"       # 15
+    "palm",        # 0
+    "index_0",     # 1
+    "index_1",     # 2
+    "index_2",     # 3
+    "middle_0",    # 4
+    "middle_1",    # 5
+    "middle_2",    # 6
+    "ring_0",      # 7
+    "ring_1",      # 8
+    "ring_2",      # 9
+    "pinky_0",     # 10
+    "pinky_1",     # 11
+    "pinky_2",     # 12
+    "thumb_0",     # 13
+    "thumb_1",     # 14
+    "thumb_2"      # 15
 ]
 
 # Highly saturated, distinct colors for maximum visual separation
+# Palette tuned for clarity:
+#   palm  -> browns
+#   index -> yellows
+#   middle-> greens
+#   ring  -> blues
+#   pinky -> purples
+#   thumb -> reds
 PART_COLORS = np.array([
-    [0.4, 0.4, 0.4],      # 0: palm - dark grey
-    [1.0, 0.0, 0.0],      # 1: thumb_mcp - pure red
-    [1.0, 0.5, 0.7],      # 2: thumb_pip - bright coral/salmon
-    [1.0, 1.0, 0.0],      # 3: thumb_tip - pure yellow
-    [0.0, 0.8, 0.0],      # 4: index_mcp - green
-    [0.0, 0.8, 0.8],      # 5: index_pip - cyan
-    [0.0, 0.4, 1.0],      # 6: index_tip - bright blue
-    [0.0, 0.0, 1.0],      # 7: middle_mcp - pure blue
-    [0.6, 0.0, 1.0],      # 8: middle_pip - violet
-    [0.8, 0.0, 0.8],      # 9: middle_tip - magenta
-    [1.0, 0.0, 0.6],      # 10: ring_mcp - hot pink
-    [1.0, 0.4, 0.0],      # 11: ring_pip - red-orange
-    [0.8, 0.8, 0.0],      # 12: ring_tip - olive yellow
-    [0.0, 0.6, 0.4],      # 13: pinky_mcp - teal green
-    [0.4, 0.0, 0.8],      # 14: pinky_pip - dark purple
-    [0.8, 0.4, 0.0],      # 15: pinky_tip - brown-orange
+    [0.60, 0.35, 0.15],   # 0: palm     - brown
+    [1.00, 0.90, 0.30],   # 1: index_0  - light yellow
+    [1.00, 0.80, 0.05],   # 2: index_1  - medium yellow
+    [0.95, 0.70, 0.00],   # 3: index_2  - dark yellow / ochre
+    [0.20, 0.90, 0.20],   # 4: middle_0 - bright green
+    [0.00, 0.80, 0.40],   # 5: middle_1 - teal green
+    [0.00, 0.60, 0.00],   # 6: middle_2 - dark green
+    [0.30, 0.60, 1.00],   # 7: ring_0   - sky blue
+    [0.10, 0.35, 0.95],   # 8: ring_1   - medium blue
+    [0.00, 0.10, 0.80],   # 9: ring_2   - deep blue
+    [0.80, 0.50, 1.00],   # 10: pinky_0 - light purple
+    [0.65, 0.30, 0.95],   # 11: pinky_1 - medium purple
+    [0.50, 0.15, 0.80],   # 12: pinky_2 - deep purple
+    [1.00, 0.35, 0.35],   # 13: thumb_0 - light red
+    [0.90, 0.15, 0.15],   # 14: thumb_1 - medium red
+    [0.70, 0.05, 0.05],   # 15: thumb_2 - deep red
 ])
 
 

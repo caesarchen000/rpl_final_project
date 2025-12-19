@@ -2,24 +2,32 @@
 
 ## Partition Map Colors (16 Hand Parts)
 
+**ID layout (your convention):**
+- 0: palm  
+- 1–3: index finger (base → tip)  
+- 4–6: middle finger (base → tip)  
+- 7–9: ring finger (base → tip)  
+- 10–12: pinky (base → tip)  
+- 13–15: thumb (base → tip)  
+
 | Part ID | Hand Part Name | Color | RGB Values |
 |---------|----------------|-------|------------|
-| 0 | palm | Bright Turquoise/Lime Green | RGB(0.2, 1.0, 0.6) |
-| 1 | thumb_mcp | Pure Red | RGB(1.0, 0.0, 0.0) |
-| 2 | thumb_pip | Bright Coral/Salmon | RGB(1.0, 0.5, 0.7) |
-| 3 | thumb_tip | Pure Yellow | RGB(1.0, 1.0, 0.0) |
-| 4 | index_mcp | Green | RGB(0.0, 0.8, 0.0) |
-| 5 | index_pip | Cyan | RGB(0.0, 0.8, 0.8) |
-| 6 | index_tip | Bright Blue | RGB(0.0, 0.4, 1.0) |
-| 7 | middle_mcp | Pure Blue | RGB(0.0, 0.0, 1.0) |
-| 8 | middle_pip | Violet | RGB(0.6, 0.0, 1.0) |
-| 9 | middle_tip | Magenta | RGB(0.8, 0.0, 0.8) |
-| 10 | ring_mcp | Hot Pink | RGB(1.0, 0.0, 0.6) |
-| 11 | ring_pip | Red-Orange | RGB(1.0, 0.4, 0.0) |
-| 12 | ring_tip | Olive Yellow | RGB(0.8, 0.8, 0.0) |
-| 13 | pinky_mcp | Teal Green | RGB(0.0, 0.6, 0.4) |
-| 14 | pinky_pip | Dark Purple | RGB(0.4, 0.0, 0.8) |
-| 15 | pinky_tip | Brown-Orange | RGB(0.8, 0.4, 0.0) |
+| 0 | palm | Brown | RGB(0.60, 0.35, 0.15) |
+| 1 | index_0 | Light Yellow | RGB(1.00, 0.90, 0.30) |
+| 2 | index_1 | Medium Yellow | RGB(1.00, 0.80, 0.05) |
+| 3 | index_2 | Dark Yellow / Ochre | RGB(0.95, 0.70, 0.00) |
+| 4 | middle_0 | Bright Green | RGB(0.20, 0.90, 0.20) |
+| 5 | middle_1 | Teal Green | RGB(0.00, 0.80, 0.40) |
+| 6 | middle_2 | Dark Green | RGB(0.00, 0.60, 0.00) |
+| 7 | ring_0 | Sky Blue | RGB(0.30, 0.60, 1.00) |
+| 8 | ring_1 | Medium Blue | RGB(0.10, 0.35, 0.95) |
+| 9 | ring_2 | Deep Blue | RGB(0.00, 0.10, 0.80) |
+| 10 | pinky_0 | Light Purple | RGB(0.80, 0.50, 1.00) |
+| 11 | pinky_1 | Medium Purple | RGB(0.65, 0.30, 0.95) |
+| 12 | pinky_2 | Deep Purple | RGB(0.50, 0.15, 0.80) |
+| 13 | thumb_0 | Light Red | RGB(1.00, 0.35, 0.35) |
+| 14 | thumb_1 | Medium Red | RGB(0.90, 0.15, 0.15) |
+| 15 | thumb_2 | Deep Red | RGB(0.70, 0.05, 0.05) |
 
 **Note**: When contact map is used for brightness modulation:
 - Colors = Hand part assignment (from partition map)

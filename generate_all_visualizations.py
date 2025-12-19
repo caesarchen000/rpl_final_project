@@ -141,15 +141,17 @@ def main():
     # Step 4: Visualize partition × contact combined
     print("\n[Step 4/4] Visualizing partition × contact combined...")
     combined_output = os.path.join(args.output_dir, 'partition_contact.obj')
+    part_logits_path = os.path.join(args.output_dir, 'part_logits.npy')
     cmd_step4 = [
         'python', 'visualize_partition_contact_multiply.py',
         '--obj_path', args.obj_path,
         '--partition_hard', partition_hard_path,
         '--contact_map', contact_map_path,
         '--sample_points', sample_points_path,
+        '--part_logits', part_logits_path,
         '--output', combined_output,
         '--brightness_scale', str(args.brightness_scale),
-        '--min_brightness', str(args.min_brightness)
+        '--min_brightness', str(args.min_brightness),
     ]
     run_command(cmd_step4, "Step 4: Visualize partition × contact combined")
     
