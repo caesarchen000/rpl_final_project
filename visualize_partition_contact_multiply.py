@@ -80,6 +80,7 @@ def visualize_partition_times_contact(
     sample_idx=0,
     brightness_scale=1.0,
     min_brightness=0.0,
+    threshold=0.3,
 ):
     """
     Visualize partition map multiplied by contact map.
@@ -238,6 +239,9 @@ def visualize_partition_times_contact(
                     contact_clipped = np.clip(contact_map, 0.0, 1.0)
                     brightness = contact_clipped * brightness_scale
                     brightness = np.clip(brightness, min_brightness, 1.0)
+                    # Apply threshold: if brightness < threshold, set to 0
+                    thresholded_count = np.sum(brightness < threshold)
+                    brightness = np.where(brightness < threshold, 0.0, brightness)
                     # Assign brightness to the part with highest logit, all other 15 parts remain 0
                     point_indices = np.arange(n_points, dtype=np.int64)
                     point_pc[point_indices, best_part] = brightness.astype(np.float32)
@@ -245,6 +249,8 @@ def visualize_partition_times_contact(
                     pc_path = os.path.join(out_dir, "final.npy")
                     np.save(pc_path, point_pc)
                     print(f"  ✓ Saved final matrix to {pc_path} with shape {point_pc.shape}")
+                    print(f"  Threshold applied: {thresholded_count} values < {threshold} set to 0")
+                    print(f"  Non-zero entries after threshold: {np.count_nonzero(point_pc)} / {point_pc.size}")
 
     # Map partition and contact from sample_points to mesh vertices
     print(f"\n[6/6] Mapping data from {len(sample_points)} sample points to {n_vertices} mesh vertices...")
@@ -430,6 +436,8 @@ Formula: final_color = partition_color * contact_probability
                        help='Scale factor for contact values (default: 1.0)')
     parser.add_argument('--min_brightness', type=float, default=0.0,
                        help='Minimum brightness to ensure colors are visible (default: 0.0)')
+    parser.add_argument('--threshold', type=float, default=0.5,
+                       help='Threshold for final.npy: values < threshold are set to 0 (default: 0.3)')
     
     args = parser.parse_args()
     
@@ -442,6 +450,7 @@ Formula: final_color = partition_color * contact_probability
         args.output,
         args.sample_idx,
         args.brightness_scale,
-        args.min_brightness
+        args.min_brightness,
+        args.threshold
     )
 

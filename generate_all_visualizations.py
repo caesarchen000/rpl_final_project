@@ -60,6 +60,8 @@ def main():
                        help='Brightness scale for contact modulation (default: 1.0)')
     parser.add_argument('--min_brightness', type=float, default=0.0,
                        help='Minimum brightness for contact modulation (default: 0.0)')
+    parser.add_argument('--threshold', type=float, default=0.3,
+                       help='Threshold for final.npy: values < threshold are set to 0 (default: 0.5)')
     
     args = parser.parse_args()
     
@@ -152,6 +154,7 @@ def main():
         '--output', combined_output,
         '--brightness_scale', str(args.brightness_scale),
         '--min_brightness', str(args.min_brightness),
+        '--threshold', str(args.threshold),
     ]
     run_command(cmd_step4, "Step 4: Visualize partition × contact combined")
     
